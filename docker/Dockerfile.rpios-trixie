@@ -1,0 +1,27 @@
+# Latest Raspberry Pi OS (Debian 13 trixie) - used for both arm64 and arm/v7
+# targets; the --platform flag selects the Pi device ISA.
+FROM n4jm4/raspberry-pi-os:trixie
+ENV DEBIAN_FRONTEND=noninteractive
+USER root
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
+    build-essential git make pkg-config gdb xvfb curl wget unzip ca-certificates ccache file sudo
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get install -y --no-install-recommends \
+    freeglut3-dev libasound2-dev libxmu-dev libxxf86vm-dev \
+    libgl1-mesa-dev libglu1-mesa-dev libraw1394-dev libudev-dev libdrm-dev \
+    libglew-dev libopenal-dev libsndfile1-dev libfreeimage-dev libcairo2-dev \
+    libfreetype6-dev libssl-dev libpulse-dev libusb-1.0-0-dev \
+    libegl1-mesa-dev libglvnd-dev libgles2-mesa-dev libassimp-dev librtaudio-dev
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get install -y --no-install-recommends \
+    libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+    liburiparser-dev libcurl4-openssl-dev libxml2-dev libpugixml-dev libpoco-dev \
+    libglfw3-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev \
+    liblapack-dev libblas-dev libopencv-dev \
+ && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends xauth && rm -rf /var/lib/apt/lists/*
+WORKDIR /src

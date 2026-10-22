@@ -1,0 +1,5 @@
+FROM archlinux:latest
+RUN pacman -Syu --noconfirm git make gcc pkgconf gdb xorg-server-xvfb \
+    curl wget unzip ca-certificates ccache sudo \
+ && pacman -Scc --noconfirm
+WORKDIR /src

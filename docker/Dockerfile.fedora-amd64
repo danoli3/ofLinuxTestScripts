@@ -1,0 +1,5 @@
+FROM fedora:latest
+RUN dnf -y install git make gcc-c++ pkgconf-pkg-config gdb xorg-x11-server-Xvfb \
+    curl wget unzip ca-certificates ccache sudo which findutils \
+ && dnf clean all
+WORKDIR /src
