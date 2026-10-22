@@ -27,6 +27,7 @@ jobs:
         run: docker buildx build --load --platform linux/amd64 -t "of-linux-test:mint" -f "docker/Dockerfile.mint-amd64" docker
       - name: Run OF tests (Linux Mint 22.2)
         run: |
+          set -o pipefail
           docker run --rm --platform linux/amd64 \
             -v "$GITHUB_WORKSPACE/openFrameworks:/src" \
             -v "$GITHUB_WORKSPACE:/harness:ro" \

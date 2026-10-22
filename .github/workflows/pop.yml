@@ -27,6 +27,7 @@ jobs:
         run: docker buildx build --load --platform linux/amd64 -t "of-linux-test:pop" -f "docker/Dockerfile.pop-amd64" docker
       - name: Run OF tests (Pop!_OS 22.04)
         run: |
+          set -o pipefail
           docker run --rm --platform linux/amd64 \
             -v "$GITHUB_WORKSPACE/openFrameworks:/src" \
             -v "$GITHUB_WORKSPACE:/harness:ro" \

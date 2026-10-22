@@ -5,4 +5,15 @@ USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential git make pkg-config gdb xvfb xauth curl wget unzip ca-certificates ccache sudo file \
  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    freeglut3-dev libasound2-dev libxmu-dev libxxf86vm-dev \
+    libgl1-mesa-dev libglu1-mesa-dev libraw1394-dev libudev-dev libdrm-dev \
+    libglew-dev libopenal-dev libsndfile1-dev libfreeimage-dev libcairo2-dev \
+    libfreetype6-dev libssl-dev libpulse-dev libusb-1.0-0-dev \
+    libegl1-mesa-dev libglvnd-dev libgles2-mesa-dev libassimp-dev librtaudio-dev \
+    libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+    liburiparser-dev libcurl4-openssl-dev libxml2-dev libpugixml-dev libpoco-dev \
+    libglfw3-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev \
+    liblapack-dev libblas-dev libopencv-dev \
+ && rm -rf /var/lib/apt/lists/*
 WORKDIR /src

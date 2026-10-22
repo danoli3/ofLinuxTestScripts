@@ -27,6 +27,7 @@ jobs:
         run: docker buildx build --load --platform linux/amd64 -t "of-linux-test:zorin" -f "docker/Dockerfile.zorin-amd64" docker
       - name: Run OF tests (Zorin OS 18 (Ubuntu 24.04 base))
         run: |
+          set -o pipefail
           docker run --rm --platform linux/amd64 \
             -v "$GITHUB_WORKSPACE/openFrameworks:/src" \
             -v "$GITHUB_WORKSPACE:/harness:ro" \
