@@ -1,0 +1,9 @@
+# Zorin OS 18 (Ubuntu 24.04 base). No official/credible Zorin container image
+# is published, so this uses its exact Ubuntu base; treat results as
+# base-equivalent, not a genuine Zorin userland.
+FROM ubuntu:24.04
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential git make pkg-config gdb xvfb xauth curl wget unzip ca-certificates ccache sudo file \
+ && rm -rf /var/lib/apt/lists/*
+WORKDIR /src

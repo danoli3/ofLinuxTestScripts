@@ -1,0 +1,41 @@
+name: Pop!_OS 22.04
+on:
+  workflow_dispatch:
+    inputs:
+      of_branch:
+        description: openFrameworks branch to test
+        default: linux2026
+      level:
+        description: smoke = lib-path tests only, full = download + core + unit tests
+        type: choice
+        options: [smoke, full]
+        default: smoke
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout harness
+        uses: actions/checkout@v4
+      - name: Checkout openFrameworks
+        uses: actions/checkout@v4
+        with:
+          repository: danoli3/openFrameworks
+          ref: ${{ inputs.of_branch }}
+          path: openFrameworks
+      - uses: docker/setup-buildx-action@v3
+      - name: Build Pop!_OS 22.04 image
+        run: docker buildx build --load --platform linux/amd64 -t "of-linux-test:pop" -f "docker/Dockerfile.pop-amd64" docker
+      - name: Run OF tests (Pop!_OS 22.04)
+        run: |
+          docker run --rm --platform linux/amd64 \
+            -v "$GITHUB_WORKSPACE/openFrameworks:/src" \
+            -v "$GITHUB_WORKSPACE:/harness:ro" \
+            -e OF_ARCH=64 \
+            -e SKIP_BUILD=${{ inputs.level == 'smoke' && '1' || '0' }} \
+            "of-linux-test:pop" \
+            bash /harness/scripts/inside/run-inside.sh 2>&1 | tee "pop-results.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pop-results
+          path: pop-results.log

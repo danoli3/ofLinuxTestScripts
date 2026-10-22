@@ -1,0 +1,6 @@
+# CachyOS (Arch base, x86-64-v3 optimised) - official image.
+FROM cachyos/cachyos-v3:latest
+RUN pacman -Syu --noconfirm git make gcc pkgconf gdb xorg-server-xvfb \
+    curl wget unzip ca-certificates ccache sudo file \
+ && pacman -Scc --noconfirm
+WORKDIR /src

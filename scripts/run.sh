@@ -23,10 +23,15 @@ target_def() {
     debian-amd64)     echo "Dockerfile.debian-amd64|linux/amd64|64|0" ;;
     fedora-amd64)     echo "Dockerfile.fedora-amd64|linux/amd64|64|0" ;;
     arch-amd64)       echo "Dockerfile.arch-amd64|linux/amd64|64|0" ;;
+    mint-amd64)       echo "Dockerfile.mint-amd64|linux/amd64|64|0" ;;
+    cachyos-amd64)    echo "Dockerfile.cachyos-amd64|linux/amd64|64|0" ;;
+    pop-amd64)        echo "Dockerfile.pop-amd64|linux/amd64|64|0" ;;
+    zorin-amd64)      echo "Dockerfile.zorin-amd64|linux/amd64|64|0" ;;
+    omarchy-amd64)    echo "Dockerfile.omarchy-amd64|linux/amd64|64|0" ;;
     *) return 1 ;;
   esac
 }
-ALL="rpios-trixie-arm64 rpios-trixie-armv7 rpi-arm64 rpi-armv6l ubuntu-2404-amd64 ubuntu-2204-amd64 debian-amd64 fedora-amd64 arch-amd64"
+ALL="rpios-trixie-arm64 rpios-trixie-armv7 rpi-arm64 ubuntu-2404-amd64 ubuntu-2204-amd64 debian-amd64 fedora-amd64 arch-amd64 mint-amd64 cachyos-amd64 pop-amd64 zorin-amd64 omarchy-amd64"
 
 command -v docker >/dev/null || { echo "ERROR: docker not found. On macOS: brew install colima docker && colima start --arch aarch64"; exit 1; }
 docker info >/dev/null 2>&1 || { echo "ERROR: docker daemon not running. On macOS: colima start --arch aarch64"; exit 1; }

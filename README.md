@@ -42,6 +42,11 @@ Each run writes a timestamped log + summary under `results/`.
 | `debian-amd64` | `debian:bookworm` | `linux/amd64` (QEMU on arm Mac) | Debian (non-Ubuntu) |
 | `fedora-amd64` | `fedora:latest` | `linux/amd64` (QEMU on arm Mac) | Fedora (non-Ubuntu) |
 | `arch-amd64` | `archlinux:latest` | `linux/amd64` (QEMU on arm Mac) | Arch Linux (non-Ubuntu) |
+| `mint-amd64` | `linuxmintd/mint22.2-amd64` | `linux/amd64` (QEMU) | Linux Mint 22.2 (Ubuntu 24.04 base) |
+| `cachyos-amd64` | `cachyos/cachyos-v3` | `linux/amd64` (QEMU) | CachyOS (Arch base, x86-64-v3) |
+| `pop-amd64` | `ubuntu:22.04` + Pop apt repo | `linux/amd64` (QEMU) | Pop!_OS 22.04 (no official container image published) |
+| `zorin-amd64` | `ubuntu:24.04` | `linux/amd64` (QEMU) | Zorin OS 18 base-equivalent (no credible Zorin image published) |
+| `omarchy-amd64` | `archlinux:latest` | `linux/amd64` (QEMU) | Omarchy userland = Arch (bare-metal installer, no container image) |
 
 On an Apple Silicon Mac, `linux/arm64` runs natively (fast). `linux/amd64`
 targets run under QEMU emulation and are slower - that is expected.

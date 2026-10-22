@@ -1,0 +1,9 @@
+# Omarchy (DHH) - Arch Linux + Hyprland desktop distribution with its own
+# ISO/repo; the installer targets bare metal (wipes the disk), so there is no
+# container image. OF compilation depends on the Arch userland, covered here
+# via archlinux; Omarchy-specific desktop packages are out of scope.
+FROM archlinux:latest
+RUN pacman -Syu --noconfirm git make gcc pkgconf gdb xorg-server-xvfb \
+    curl wget unzip ca-certificates ccache sudo file \
+ && pacman -Scc --noconfirm
+WORKDIR /src

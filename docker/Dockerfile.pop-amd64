@@ -1,0 +1,14 @@
+# Pop!_OS 22.04 (Ubuntu 22.04 base + System76 Pop apt repo). No official
+# Pop!_OS container image is published, so the Pop repo is layered onto its
+# exact Ubuntu base; apt update must succeed against apt.pop-os.org.
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg ca-certificates \
+ && mkdir -p /etc/apt/keyrings \
+ && curl -fsSL https://apt.pop-os.org/repo/key -o /etc/apt/keyrings/pop.gpg.asc \
+ && echo "deb [signed-by=/etc/apt/keyrings/pop.gpg.asc] http://apt.pop-os.org/release jammy main" > /etc/apt/sources.list.d/pop.list \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+    build-essential git make pkg-config gdb xvfb xauth wget unzip ccache sudo file \
+ && rm -rf /var/lib/apt/lists/*
+WORKDIR /src
