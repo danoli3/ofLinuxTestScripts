@@ -2,6 +2,7 @@
 FROM kalilinux/kali-rolling:latest
 ENV DEBIAN_FRONTEND=noninteractive
 USER root
+RUN sed -i 's|http://http.kali.org/kali|https://mirrors.ocf.berkeley.edu/kali|g' /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential git make pkg-config gdb xvfb xauth curl wget unzip ca-certificates ccache sudo file \
     freeglut3-dev libasound2-dev libxmu-dev libxxf86vm-dev \
