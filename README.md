@@ -78,3 +78,29 @@ Set `SKIP_BUILD=1` for the fast lib-path-only smoke, e.g.
 - Docker with buildx + QEMU/binfmt for cross-platform runs
   (Colima on macOS provides this: `colima start --arch aarch64`)
 - A local openFrameworks checkout
+
+## Current results (2026-10-25)
+
+Full = download libs + deployed-libs check + OF core build + unit tests
+against openFrameworks `linux2026`. Smoke = lib-path tests only.
+
+| Target | OS (2026) | Platform | Result |
+|---|---|---|---|
+| `rpios-trixie-arm64` | Raspberry Pi OS Trixie (Debian 13) | `linux/arm64` native | ✅ Full PASS (local) |
+| `rpios-trixie-armv7` | Raspberry Pi OS Trixie (Debian 13) | `linux/arm/v7` QEMU | ◐ Libs 10/10, paths 35/35; core compile not run to completion under QEMU |
+| `mint-amd64` | Linux Mint 22.2 | `linux/amd64` | ✅ Full PASS |
+| `pop-amd64` | Pop!_OS 22.04 (Ubuntu base + Pop repo) | `linux/amd64` | ✅ Full PASS |
+| `zorin-amd64` | Zorin OS 18 (Ubuntu 24.04 base-equiv.) | `linux/amd64` | ✅ Full PASS |
+| `cachyos-amd64` | CachyOS (x86-64-v3) | `linux/amd64` | ✅ Full PASS |
+| `omarchy-amd64` | Omarchy (Arch userland) | `linux/amd64` | ✅ Full PASS |
+| `kali-amd64` | Kali Linux rolling | `linux/amd64` | ✅ Full PASS |
+| `kali-arm64` | Kali Linux rolling | `linux/arm64` native | ✅ Full PASS |
+| `jetson-arm64` | NVIDIA Jetson L4T r36.2.0 (Ubuntu 22.04) | `linux/arm64` native | ✅ Full PASS (Ubuntu arm64 libs) |
+| `rpi-arm64` | Debian Bookworm (CI RPi leg equiv.) | `linux/arm64` | △ Platform verified only |
+| `ubuntu-2404-amd64` | Ubuntu 24.04 | `linux/amd64` | — Not run yet |
+| `ubuntu-2204-amd64` | Ubuntu 22.04 | `linux/amd64` | — Not run yet |
+| `debian-amd64` | Debian Bookworm | `linux/amd64` | — Not run yet |
+| `fedora-amd64` | Fedora latest | `linux/amd64` | — Not run yet |
+| `arch-amd64` | Arch Linux | `linux/amd64` | — Not run yet (see `omarchy-amd64`) |
+
+Details, run links and per-step breakdowns: [results/results.md](results/results.md).

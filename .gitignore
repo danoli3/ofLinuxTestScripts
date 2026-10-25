@@ -1,3 +1,4 @@
 results/*
 !results/.gitkeep
+!results/results.md
 .DS_Store
