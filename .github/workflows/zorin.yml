@@ -31,7 +31,7 @@ jobs:
           docker run --rm --platform linux/amd64 \
             -v "$GITHUB_WORKSPACE/openFrameworks:/src" \
             -v "$GITHUB_WORKSPACE:/harness:ro" \
-            -e OF_ARCH=64 \
+            -e OF_ARCH=64 -e LC_ALL=C.UTF-8 -e LANG=C.UTF-8 \
             -e SKIP_BUILD=${{ inputs.level == 'smoke' && '1' || '0' }} \
             "of-linux-test:zorin" \
             bash /harness/scripts/inside/run-inside.sh 2>&1 | tee "zorin-results.log"
