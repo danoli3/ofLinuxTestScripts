@@ -8,8 +8,5 @@ RUN pacman -S --noconfirm --needed openal glew freeglut gstreamer \
     assimp glfw-x11 uriparser curl pugixml rtaudio poco cairo freetype2 \
     libsndfile libusb libxml2 openssl alsa-lib libpulse \
  && pacman -Scc --noconfirm
-RUN useradd -m builder \
- && echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
- && su builder -c 'git clone https://aur.archlinux.org/freeimage.git /tmp/freeimage && cd /tmp/freeimage && makepkg -si --noconfirm' \
- && rm -rf /tmp/freeimage
+# FreeImage now comes from apothecary (OF linux2026 9704d872b); no AUR build needed.
 WORKDIR /src
