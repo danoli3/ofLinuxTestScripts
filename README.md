@@ -47,6 +47,7 @@ Each run writes a timestamped log + summary under `results/`.
 | `pop-amd64` | `ubuntu:22.04` + Pop apt repo | `linux/amd64` (QEMU) | Pop!_OS 22.04 (no official container image published) |
 | `zorin-amd64` | `ubuntu:24.04` | `linux/amd64` (QEMU) | Zorin OS 18 base-equivalent (no credible Zorin image published) |
 | `omarchy-amd64` | `archlinux:latest` | `linux/amd64` (QEMU) | Omarchy userland = Arch (bare-metal installer, no container image) |
+| `kali-amd64` | `kalilinux/kali-rolling` | `linux/amd64` (QEMU locally / native on GH) | Kali Linux rolling (Debian testing base) |
 
 On an Apple Silicon Mac, `linux/arm64` runs natively (fast). `linux/amd64`
 targets run under QEMU emulation and are slower - that is expected.
