@@ -29,10 +29,12 @@ target_def() {
     zorin-amd64)      echo "Dockerfile.zorin-amd64|linux/amd64|64|0" ;;
     omarchy-amd64)    echo "Dockerfile.omarchy-amd64|linux/amd64|64|0" ;;
     kali-amd64)       echo "Dockerfile.kali-amd64|linux/amd64|64|0" ;;
+    kali-arm64)       echo "Dockerfile.kali-arm64|linux/arm64|arm64|0" ;;
+    jetson-arm64)     echo "Dockerfile.jetson-arm64|linux/arm64|jetson|0" ;;
     *) return 1 ;;
   esac
 }
-ALL="rpios-trixie-arm64 rpios-trixie-armv7 rpi-arm64 ubuntu-2404-amd64 ubuntu-2204-amd64 debian-amd64 fedora-amd64 arch-amd64 mint-amd64 cachyos-amd64 pop-amd64 zorin-amd64 omarchy-amd64 kali-amd64"
+ALL="rpios-trixie-arm64 rpios-trixie-armv7 rpi-arm64 ubuntu-2404-amd64 ubuntu-2204-amd64 debian-amd64 fedora-amd64 arch-amd64 mint-amd64 cachyos-amd64 pop-amd64 zorin-amd64 omarchy-amd64 kali-amd64 kali-arm64 jetson-arm64"
 
 command -v docker >/dev/null || { echo "ERROR: docker not found. On macOS: brew install colima docker && colima start --arch aarch64"; exit 1; }
 docker info >/dev/null 2>&1 || { echo "ERROR: docker daemon not running. On macOS: colima start --arch aarch64"; exit 1; }

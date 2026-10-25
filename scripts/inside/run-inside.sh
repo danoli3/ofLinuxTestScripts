@@ -18,7 +18,13 @@ step "STEP 2: download libs (arch=${OF_ARCH:-64})"
 ./scripts/linux/download_libs.sh -t latest -a "${OF_ARCH:-64}" -g 10 || FAIL=1
 step "STEP 3: deployed libs check"
 EXTRA=""; [ "${ALLOW_INCOMPLETE:-0}" = "1" ] && EXTRA="--allow-incomplete"
-bash scripts/ci/check_deployed_libs.sh --platform linux --arch "${OF_ARCH:-64}" $EXTRA || FAIL=1
+if [ "${OF_ARCH:-64}" = "jetson" ]; then
+  echo "(check_deployed_libs.sh has no jetson arch; verifying lib/linux/jetson directly)"
+  test -f libs/tess2/lib/linux/jetson/libtess2.a && echo "  OK  jetson tess2 present" || FAIL=1
+  find libs -type d -path "*lib/linux/jetson" | head -n 20
+else
+  bash scripts/ci/check_deployed_libs.sh --platform linux --arch "${OF_ARCH:-64}" $EXTRA || FAIL=1
+fi
 step "STEP 4: build OF core + unit tests"
 if [ -f libs/glm/include/glm/vec2.hpp ]; then
   (cd libs/openFrameworksCompiled/project && make -j4 Debug) || FAIL=1

@@ -48,6 +48,8 @@ Each run writes a timestamped log + summary under `results/`.
 | `zorin-amd64` | `ubuntu:24.04` | `linux/amd64` (QEMU) | Zorin OS 18 base-equivalent (no credible Zorin image published) |
 | `omarchy-amd64` | `archlinux:latest` | `linux/amd64` (QEMU) | Omarchy userland = Arch (bare-metal installer, no container image) |
 | `kali-amd64` | `kalilinux/kali-rolling` | `linux/amd64` (QEMU locally / native on GH) | Kali Linux rolling (Debian testing base) |
+| `kali-arm64` | `kalilinux/kali-rolling` | `linux/arm64` (native) | Kali Linux rolling, arm64 |
+| `jetson-arm64` | `nvcr.io/nvidia/l4t-base:r36.2.0` | `linux/arm64` (native, `ubuntu-24.04-arm`) | NVIDIA Jetson L4T (JetPack 6), `JETSON_DETECTED=yes` |
 
 On an Apple Silicon Mac, `linux/arm64` runs natively (fast). `linux/amd64`
 targets run under QEMU emulation and are slower - that is expected.
