@@ -29,6 +29,13 @@ else
   bash scripts/ci/check_deployed_libs.sh --platform linux --arch "${OF_ARCH:-64}" $EXTRA || FAIL=1
 fi
 step "STEP 4: build OF core + unit tests"
+# A 32-bit ARM userland can run directly on an arm64 runner while uname still
+# reports aarch64. Use its native compiler with the requested 32-bit target.
+case "${OF_ARCH:-64}" in
+  armv6l|armv7l)
+    export PLATFORM_ARCH="$OF_ARCH" CROSS_COMPILING=0
+    ;;
+esac
 if [ -f libs/glm/include/glm/vec2.hpp ]; then
   (cd libs/openFrameworksCompiled/project && make -j4 Debug) || FAIL=1
   bash scripts/ci/linux/64/run_tests.sh || FAIL=1

@@ -99,6 +99,28 @@ echo checked > "$CALLS"
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertEqual((self.root / "calls").read_text().strip(), "checked")
 
+    def test_armv7_builds_use_userland_architecture(self):
+        self.write("of", "exit 0\n")
+        self.write("scripts/ci/check_deployed_libs.sh", "exit 0\n")
+        self.write("libs/glm/include/glm/vec2.hpp", "// fixture\n")
+        (self.root / "libs/openFrameworksCompiled/project").mkdir(parents=True)
+        make = self.write("bin/make", '''#!/bin/bash
+test "$PLATFORM_ARCH" = armv7l || exit 7
+test "$CROSS_COMPILING" = 0 || exit 8
+echo core >> "$CALLS"
+''')
+        make.chmod(0o755)
+        self.env["PATH"] = str(make.parent) + os.pathsep + self.env["PATH"]
+        self.write("scripts/ci/linux/64/run_tests.sh", '''
+test "$PLATFORM_ARCH" = armv7l || exit 7
+test "$CROSS_COMPILING" = 0 || exit 8
+echo unit-tests >> "$CALLS"
+''')
+        result = self.run_script(self.container_runner())
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual((self.root / "calls").read_text().splitlines(),
+                         ["core", "unit-tests"])
+
 
 if __name__ == "__main__":
     unittest.main()
