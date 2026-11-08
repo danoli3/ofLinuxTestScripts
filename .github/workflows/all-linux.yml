@@ -26,6 +26,8 @@ jobs:
           # Raspberry Pi OS / Debian arm64 (native on the arm runner)
           - { target: rpios-trixie-arm64, dockerfile: Dockerfile.rpios-trixie, platform: linux/arm64, arch: aarch64, allow: 1, runner: ubuntu-24.04-arm }
           - { target: rpi-arm64, dockerfile: Dockerfile.rpi-arm64, platform: linux/arm64, arch: aarch64, allow: 1, runner: ubuntu-24.04-arm }
+          # Full 32-bit Pi setup, core build and unit tests under QEMU.
+          - { target: rpi-armv7l, dockerfile: Dockerfile.rpi-arm64, platform: linux/arm/v7, arch: armv7l, allow: 1, runner: ubuntu-24.04-arm, qemu: true }
           # 32-bit Pi userland under QEMU: lib-path smoke only (full compile is too slow emulated)
           - { target: rpios-trixie-armv7, dockerfile: Dockerfile.rpios-trixie, platform: linux/arm/v7, arch: armv7l, allow: 1, runner: ubuntu-24.04-arm, qemu: true, smoke_only: true }
           - { target: kali-arm64, dockerfile: Dockerfile.kali-arm64, platform: linux/arm64, arch: arm64, allow: 0, runner: ubuntu-24.04-arm }

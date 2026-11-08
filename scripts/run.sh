@@ -1,7 +1,7 @@
 #!/bin/bash
 # Host orchestrator: run OF Linux tests in Docker for one target (or all).
 # Usage: ./scripts/run.sh <target|all>   (see README matrix)
-# Env: OF_ROOT (default ../openFrameworks), OF_BRANCH (default linux2026),
+# Env: OF_ROOT (default ../openFrameworks), OF_BRANCH (default master),
 #      SKIP_BUILD=1 for lib-path-only smoke.
 set -u
 HARNESS="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,6 +17,7 @@ target_def() {
     rpios-trixie-arm64) echo "Dockerfile.rpios-trixie|linux/arm64|aarch64|1" ;;
     rpios-trixie-armv7) echo "Dockerfile.rpios-trixie|linux/arm/v7|armv7l|1" ;;
     rpi-arm64)        echo "Dockerfile.rpi-arm64|linux/arm64|aarch64|1" ;;
+    rpi-armv7l)       echo "Dockerfile.rpi-arm64|linux/arm/v7|armv7l|1" ;;
     rpi-armv6l)       echo "Dockerfile.rpi-armv6l|linux/arm/v6|armv6l|1" ;;
     ubuntu-2404-amd64) echo "Dockerfile.ubuntu-2404-amd64|linux/amd64|64|0" ;;
     ubuntu-2204-amd64) echo "Dockerfile.ubuntu-2204-amd64|linux/amd64|64|0" ;;
@@ -34,7 +35,7 @@ target_def() {
     *) return 1 ;;
   esac
 }
-ALL="rpios-trixie-arm64 rpios-trixie-armv7 rpi-arm64 ubuntu-2404-amd64 ubuntu-2204-amd64 debian-amd64 fedora-amd64 arch-amd64 mint-amd64 cachyos-amd64 pop-amd64 zorin-amd64 omarchy-amd64 kali-amd64 kali-arm64 jetson-arm64"
+ALL="rpios-trixie-arm64 rpios-trixie-armv7 rpi-arm64 rpi-armv7l ubuntu-2404-amd64 ubuntu-2204-amd64 debian-amd64 fedora-amd64 arch-amd64 mint-amd64 cachyos-amd64 pop-amd64 zorin-amd64 omarchy-amd64 kali-amd64 kali-arm64 jetson-arm64"
 
 command -v docker >/dev/null || { echo "ERROR: docker not found. On macOS: brew install colima docker && colima start --arch aarch64"; exit 1; }
 docker info >/dev/null 2>&1 || { echo "ERROR: docker daemon not running. On macOS: colima start --arch aarch64"; exit 1; }

@@ -14,14 +14,17 @@ if [ "${SKIP_BUILD:-0}" = "1" ]; then
   echo "SKIP_BUILD=1: stopping after lib-path tests"
   exit $FAIL
 fi
-step "STEP 2: download libs (arch=${OF_ARCH:-64})"
-./scripts/linux/download_libs.sh -t latest -a "${OF_ARCH:-64}" -g 10 || FAIL=1
+step "STEP 2: OF setup / install dependencies + libs (arch=${OF_ARCH:-64})"
+if ! bash /harness/scripts/inside/setup-of.sh; then
+  echo "ERROR: OF setup failed; stopping before compilation"
+  echo "INSIDE_EXIT:1"
+  exit 1
+fi
 step "STEP 3: deployed libs check"
 EXTRA=""; [ "${ALLOW_INCOMPLETE:-0}" = "1" ] && EXTRA="--allow-incomplete"
 if [ "${OF_ARCH:-64}" = "jetson" ]; then
-  echo "(check_deployed_libs.sh has no jetson arch; verifying lib/linux/jetson directly)"
-  test -f libs/tess2/lib/linux/jetson/libtess2.a && echo "  OK  jetson tess2 present" || FAIL=1
-  find libs -type d -path "*lib/linux/jetson" | head -n 20
+  echo "(Jetson uses the Ubuntu linux/arm64 libraries)"
+  bash scripts/ci/check_deployed_libs.sh --platform linux --arch arm64 $EXTRA || FAIL=1
 else
   bash scripts/ci/check_deployed_libs.sh --platform linux --arch "${OF_ARCH:-64}" $EXTRA || FAIL=1
 fi
