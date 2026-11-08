@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential git make pkg-config gdb xvfb curl wget unzip ca-certificates \
     freeglut3-dev libasound2-dev libgl1-mesa-dev libglu1-mesa-dev libudev-dev \
-    libglew-dev libopenal-dev libsndfile1-dev libfreeimage-dev libcairo2-dev \
+    libglew-dev libopenal-dev libsndfile1-dev libcairo2-dev \
     libfreetype6-dev libssl-dev libpulse-dev libusb-1.0-0-dev \
     libegl1-mesa-dev libglvnd-dev libgles2-mesa-dev libassimp-dev librtaudio-dev \
     libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \

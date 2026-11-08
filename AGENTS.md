@@ -13,6 +13,11 @@
 - Dockerfiles provide container/test tooling. Hand-maintained package lists are
   not a substitute for running OF setup. Use distro packages for dependencies
   such as Cairo rather than building them separately.
+- FreeImage must be built and packaged by Apothecary and downloaded with the OF
+  libraries. Do not install FreeImage through apt, dnf, pacman, or AUR, or add
+  system FreeImage as a workaround for a missing/broken Apothecary package.
+  Remove stale FreeImage package requests in OF's dependency installers upstream;
+  keep this harness running the actual OF setup so those regressions stay visible.
 - Setup must run without interactive prompts, preserve the requested library
   architecture, and report failures before attempting core/unit-test builds.
 - Keep smoke-only path checks separate from full dependency/build/test coverage.

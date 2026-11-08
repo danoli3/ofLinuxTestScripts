@@ -78,6 +78,10 @@ fails. Dockerfile package lists do not replace OF setup. Installer failures are
 reported as setup failures, before compilation. The all-targets workflow includes
 full `rpi-armv7l` coverage; `rpios-trixie-armv7` remains a smoke-only QEMU job.
 
+FreeImage comes from the Apothecary library package, not a distro package or AUR.
+OF dependency installers that still request system FreeImage need an upstream fix;
+the harness reports their failure rather than bypassing the installer.
+
 ## Layout
 
 - `docker/Dockerfile.*` - one image per target
