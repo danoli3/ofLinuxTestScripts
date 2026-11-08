@@ -6,7 +6,7 @@
 set -u
 HARNESS="$(cd "$(dirname "$0")/.." && pwd)"
 OF_ROOT="${OF_ROOT:-$HARNESS/../openFrameworks}"
-OF_BRANCH="${OF_BRANCH:-linux2026}"
+OF_BRANCH="${OF_BRANCH:-master}"
 TARGET="${1:-rpi-arm64}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$HARNESS/results"

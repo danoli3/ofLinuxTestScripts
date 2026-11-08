@@ -4,7 +4,7 @@ on:
     inputs:
       of_branch:
         description: openFrameworks branch to test
-        default: linux2026
+        default: master
       level:
         description: smoke = lib-path tests only, full = download + core + unit tests
         type: choice
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout openFrameworks
         uses: actions/checkout@v7
         with:
-          repository: danoli3/openFrameworks
+          repository: openframeworks/openFrameworks
           ref: ${{ inputs.of_branch }}
           path: openFrameworks
       - uses: docker/setup-buildx-action@v4

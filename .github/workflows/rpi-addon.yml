@@ -1,0 +1,77 @@
+name: Raspberry Pi addon cross-build (armv6l + aarch64)
+# Builds an OF addon's examples for Raspberry Pi with OF's own rpi cross toolchain (multistrap sysroot),
+# the same setup as OF CI's rpi-build job. Default: ofxImGui PR #145.
+on:
+  workflow_dispatch:
+    inputs:
+      of_repo:
+        description: openFrameworks repository
+        default: openframeworks/openFrameworks
+      of_branch:
+        description: openFrameworks branch/tag/sha
+        default: master
+      addon_repo:
+        description: addon repository
+        default: jvcleave/ofxImGui
+      addon_ref:
+        description: addon ref (PR head = refs/pull/145/head)
+        default: refs/pull/145/head
+      examples:
+        description: space-separated example names (empty = all)
+        default: ''
+jobs:
+  rpi:
+    name: ${{ matrix.arch }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: armv6l, multistrap_arch: armhf, suffix: arm-linux-gnueabihf }
+          - { arch: aarch64, multistrap_arch: arm64, suffix: aarch64-linux-gnu }
+    env:
+      ARCH: ${{ matrix.arch }}
+      MULTISTRAP_ARCH: ${{ matrix.multistrap_arch }}
+    steps:
+      - name: Checkout harness
+        uses: actions/checkout@v7
+        with:
+          path: harness
+      - name: Checkout openFrameworks
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.of_repo }}
+          ref: ${{ inputs.of_branch }}
+          path: of
+      - name: Checkout addon
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.addon_repo }}
+          ref: ${{ inputs.addon_ref }}
+          path: of/addons/_addon_checkout
+      - name: Name the addon directory
+        working-directory: of
+        run: |
+          name="$(basename '${{ inputs.addon_repo }}')"
+          mv addons/_addon_checkout "addons/$name"
+          echo "ADDON_NAME=$name" >> "$GITHUB_ENV"
+          git -C "addons/$name" log --oneline -1
+      - name: Cross toolchain + sysroot packages
+        run: sudo apt-get update && sudo apt-get install -y multistrap unzip gcc-${{ matrix.suffix }} g++-${{ matrix.suffix }}
+      - name: Download libs
+        working-directory: of
+        run: ./scripts/linux/download_libs.sh -t latest -a ${{ matrix.arch }} -g 10
+      - name: Check deployed libraries
+        working-directory: of
+        run: bash scripts/ci/check_deployed_libs.sh --platform linux --arch ${{ matrix.arch }} --allow-incomplete
+      - name: Install Raspberry Pi sysroot
+        working-directory: of
+        run: ./scripts/ci/linux/rpi/install.sh
+      - name: Build addon examples
+        working-directory: of
+        env:
+          EXAMPLES: ${{ inputs.examples }}
+        run: |
+          export ADDON_DIR="addons/$ADDON_NAME"
+          bash "$GITHUB_WORKSPACE/harness/scripts/inside/rpi-cross-addon.sh"
