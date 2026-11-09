@@ -1,5 +1,16 @@
 # ofLinuxTestScripts
 
+[![All Linux targets](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/all-linux.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/all-linux.yml)
+[![CachyOS](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/cachyos.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/cachyos.yml)
+[![Jetson](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/jetson.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/jetson.yml)
+[![Kali arm64](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/kali-arm64.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/kali-arm64.yml)
+[![Kali](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/kali.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/kali.yml)
+[![Linux Mint](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/mint.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/mint.yml)
+[![Omarchy](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/omarchy.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/omarchy.yml)
+[![Pop!_OS](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/pop.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/pop.yml)
+[![Zorin OS](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/zorin.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/zorin.yml)
+[![Raspberry Pi addon](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/rpi-addon.yml/badge.svg?branch=main)](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/rpi-addon.yml)
+
 Docker-based Linux test harness for openFrameworks.
 Runs the OF Linux CI checks inside containers so a macOS (or any Docker) host can
 simulate Raspberry Pi and other Linux distributions without a physical board.
