@@ -3,6 +3,7 @@
 # base-equivalent, not a genuine Zorin userland.
 FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
+RUN echo 'Acquire::Retries "5";' > /etc/apt/apt.conf.d/80-retries
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential git make pkg-config gdb xvfb xauth curl wget unzip ca-certificates ccache sudo file \
  && rm -rf /var/lib/apt/lists/*

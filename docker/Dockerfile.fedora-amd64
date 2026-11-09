@@ -1,4 +1,5 @@
 FROM fedora:latest
+RUN echo 'retries=10' >> /etc/dnf/dnf.conf
 RUN dnf -y install git make gcc-c++ pkgconf-pkg-config gdb xorg-x11-server-Xvfb \
     xorg-x11-xauth file curl wget unzip ca-certificates ccache sudo which findutils \
  && dnf clean all

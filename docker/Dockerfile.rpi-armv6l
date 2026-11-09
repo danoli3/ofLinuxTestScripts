@@ -1,6 +1,7 @@
 # Raspberry Pi 32-bit sim: Debian bookworm arm/v6 via QEMU (slow on arm64 hosts).
 FROM debian:bookworm
 ENV DEBIAN_FRONTEND=noninteractive
+RUN echo 'Acquire::Retries "5";' > /etc/apt/apt.conf.d/80-retries
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential git make pkg-config gdb xvfb curl wget unzip ca-certificates \
     freeglut3-dev libasound2-dev libgl1-mesa-dev libglu1-mesa-dev libudev-dev \
