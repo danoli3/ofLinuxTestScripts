@@ -24,8 +24,8 @@ jobs:
       matrix:
         include:
           # Raspberry Pi OS / Debian arm64 (native on the arm runner)
-          - { target: rpios-trixie-arm64, dockerfile: Dockerfile.rpios-trixie, platform: linux/arm64, arch: aarch64, allow: 1, runner: ubuntu-24.04-arm }
-          - { target: rpi-arm64, dockerfile: Dockerfile.rpi-arm64, platform: linux/arm64, arch: aarch64, allow: 1, runner: ubuntu-24.04-arm }
+          - { target: rpios-trixie-arm64, dockerfile: Dockerfile.rpios-trixie, platform: linux/arm64, arch: aarch64, allow: 1, gl_variants: "gles2 gles3", runner: ubuntu-24.04-arm }
+          - { target: rpi-arm64, dockerfile: Dockerfile.rpi-arm64, platform: linux/arm64, arch: aarch64, allow: 1, gl_variants: "gles2 gles3", runner: ubuntu-24.04-arm }
           # Full 32-bit Pi setup, core build and unit tests under QEMU.
           - { target: rpi-armv7l, dockerfile: Dockerfile.rpi-arm64, platform: linux/arm/v7, arch: armv7l, allow: 1, runner: ubuntu-24.04-arm, qemu: true }
           # 32-bit Pi userland under QEMU: lib-path smoke only (full compile is too slow emulated)
@@ -66,6 +66,7 @@ jobs:
             -v "$GITHUB_WORKSPACE:/harness:ro" \
             -e OF_ARCH="${{ matrix.arch }}" -e ALLOW_INCOMPLETE="${{ matrix.allow }}" \
             -e LC_ALL=C.UTF-8 -e LANG=C.UTF-8 \
+            -e GL_VARIANTS="${{ matrix.gl_variants }}" \
             -e SKIP_BUILD=${{ (inputs.level == 'smoke' || matrix.smoke_only == true) && '1' || '0' }} \
             "of-linux-test:${{ matrix.target }}" \
             bash /harness/scripts/inside/run-inside.sh 2>&1 | tee "${{ matrix.target }}-results.log"

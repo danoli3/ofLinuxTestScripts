@@ -39,6 +39,9 @@ esac
 if [ -f libs/glm/include/glm/vec2.hpp ]; then
   (cd libs/openFrameworksCompiled/project && make -j4 Debug) || FAIL=1
   bash scripts/ci/linux/64/run_tests.sh || FAIL=1
+  if [ -n "${GL_VARIANTS:-}" ]; then
+    bash /harness/scripts/inside/gl-variants.sh || FAIL=1
+  fi
 else
   echo "SKIP core build: apothecary latest has no glm (same guard as CI rpi-build)"
 fi
