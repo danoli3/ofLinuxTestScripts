@@ -15,7 +15,7 @@ Docker-based Linux test harness for openFrameworks.
 Runs the OF Linux CI checks inside containers so a macOS (or any Docker) host can
 simulate Raspberry Pi and other Linux distributions without a physical board.
 
-Default branch: `master` in your local openFrameworks checkout.
+Default OF branch: `master` in your local openFrameworks checkout (this repo's own default branch is `main`).
 
 ## Quick start
 
@@ -106,7 +106,55 @@ the harness reports their failure rather than bypassing the installer.
   (Colima on macOS provides this: `colima start --arch aarch64`)
 - A local openFrameworks checkout
 
-## Current results (2026-10-25)
+## GitHub Actions
+
+`.github/workflows/all-linux.yml` runs all 17 targets in a matrix. Start it from
+the Actions tab (or `gh workflow run all-linux.yml`) with these inputs:
+
+| Input | Default | Meaning |
+|---|---|---|
+| `of_repo` | `openframeworks/openFrameworks` | OF repository to test (e.g. a fork) |
+| `of_branch` | `master` | branch, tag or sha |
+| `level` | `full` | `smoke` = lib-path tests only, `full` = setup + core build + unit tests |
+
+```bash
+gh workflow run all-linux.yml -f of_repo=danoli3/openFrameworks -f of_branch=linux-gl-api -f level=full
+```
+
+The per-distro workflows (`cachyos.yml`, `kali.yml`, ...) and `rpi-addon.yml`
+run on their own; the badges above show their latest status on `main`.
+
+## GL / GLES variants
+
+Targets with `gl_variants` set in the matrix (`rpi-arm64`, `rpios-trixie-arm64`)
+also run `scripts/inside/gl-variants.sh` after the default desktop-GL build. It
+rebuilds the OF core with the `OF_GL_API` make switch for `gles2` and `gles3`
+and prints `GL_VARIANT_RESULT:<variant>:PASS|FAIL`. These are compile + link
+checks only; the containers have no GPU, so nothing is rendered.
+
+```bash
+make -j4 Debug OF_GL_API=gl     # default, desktop GL (GLEW)
+make -j4 Debug OF_GL_API=gles2  # TARGET_OPENGLES + TARGET_FORCE_GLES_2
+make -j4 Debug OF_GL_API=gles3  # TARGET_OPENGLES + TARGET_OPENGLES_3
+```
+
+CMake builds take the same values via `-DOF_GL_API=...`. This needs an OF
+checkout that includes the `OF_GL_API` switch.
+
+## 32-bit ARM
+
+`rpi-armv7l` / `rpi-armv6l` run a 32-bit userland under QEMU, so the harness sets
+`PLATFORM_ARCH=<arch>` and `CROSS_COMPILING=0` and builds natively instead of
+with the cross toolchain.
+
+## Network flakiness
+
+The Dockerfiles configure apt (`Acquire::Retries 5`) and dnf (`retries=10`) to
+retry downloads, which also covers the installs OF's own setup runs at test
+time. Pacman-based images (arch, cachyos, omarchy) have no equivalent, so a
+mirror error there is a re-run, not a regression.
+
+## Results (local runs, 2026-10-25)
 
 Full = download libs + deployed-libs check + OF core build + unit tests
 against openFrameworks `linux2026`. Smoke = lib-path tests only.
@@ -129,5 +177,8 @@ against openFrameworks `linux2026`. Smoke = lib-path tests only.
 | `debian-amd64` | Debian Bookworm | `linux/amd64` | — Not run yet |
 | `fedora-amd64` | Fedora latest | `linux/amd64` | — Not run yet |
 | `arch-amd64` | Arch Linux | `linux/amd64` | — Not run yet (see `omarchy-amd64`) |
+
+The table is from local runs and is not kept current. For the current state see the
+badges at the top and the latest [all-linux runs](https://github.com/danoli3/ofLinuxTestScripts/actions/workflows/all-linux.yml).
 
 Details, run links and per-step breakdowns: [results/results.md](results/results.md).
