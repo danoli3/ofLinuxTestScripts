@@ -1,6 +1,6 @@
 name: Raspberry Pi addon cross-build (armv6l + aarch64)
 # Builds an OF addon's examples for Raspberry Pi with OF's own rpi cross toolchain (multistrap sysroot),
-# the same setup as OF CI's rpi-build job. Default: ofxImGui PR #145.
+# the same setup as OF CI's rpi-build job. Default: ofxImGui PR #146 (Dear ImGui 1.93.0, stacked on #145, which is merged into develop). Use addon_ref=develop for the merged state.
 on:
   workflow_dispatch:
     inputs:
@@ -14,8 +14,8 @@ on:
         description: addon repository
         default: jvcleave/ofxImGui
       addon_ref:
-        description: addon ref (PR head = refs/pull/145/head)
-        default: refs/pull/145/head
+        description: addon ref (PR head = refs/pull/146/head, or develop)
+        default: refs/pull/146/head
       examples:
         description: space-separated example names (empty = all)
         default: ''
