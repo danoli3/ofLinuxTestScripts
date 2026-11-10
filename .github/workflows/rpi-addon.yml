@@ -75,3 +75,47 @@ jobs:
         run: |
           export ADDON_DIR="addons/$ADDON_NAME"
           bash "$GITHUB_WORKSPACE/harness/scripts/inside/rpi-cross-addon.sh"
+  linux-native:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux64, runner: ubuntu-24.04, arch: x86_64 }
+          - { name: linuxaarch64, runner: ubuntu-24.04-arm, arch: aarch64 }
+    steps:
+      - name: Checkout harness
+        uses: actions/checkout@v7
+        with:
+          path: harness
+      - name: Checkout openFrameworks
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.of_repo }}
+          ref: ${{ inputs.of_branch }}
+          path: of
+      - name: Checkout addon
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.addon_repo }}
+          ref: ${{ inputs.addon_ref }}
+          path: of/addons/_addon_checkout
+      - name: Name the addon directory
+        working-directory: of
+        run: |
+          name="$(basename '${{ inputs.addon_repo }}')"
+          mv addons/_addon_checkout "addons/$name"
+          echo "ADDON_NAME=$name" >> "$GITHUB_ENV"
+          git -C "addons/$name" log --oneline -1
+      - name: OF setup
+        working-directory: of
+        run: DOWNLOAD_LIBS_ARGS="-g 10" bash ./of setup linux
+      - name: Build addon examples
+        working-directory: of
+        env:
+          EXAMPLES: ${{ inputs.examples }}
+        run: |
+          export ADDON_DIR="addons/$ADDON_NAME"
+          bash "$GITHUB_WORKSPACE/harness/scripts/inside/linux-native-addon.sh"
