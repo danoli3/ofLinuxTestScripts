@@ -119,3 +119,47 @@ jobs:
         run: |
           export ADDON_DIR="addons/$ADDON_NAME"
           bash "$GITHUB_WORKSPACE/harness/scripts/inside/linux-native-addon.sh"
+  emscripten:
+    name: emscripten wasm${{ matrix.wasm }} ES${{ matrix.gles }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        wasm: [32, 64]
+        gles: [3, 2]
+    steps:
+      - name: Checkout harness
+        uses: actions/checkout@v7
+        with:
+          path: harness
+      - name: Checkout openFrameworks
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.of_repo }}
+          ref: ${{ inputs.of_branch }}
+          path: of
+      - name: Checkout addon
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.addon_repo }}
+          ref: ${{ inputs.addon_ref }}
+          path: of/addons/_addon_checkout
+      - name: Name the addon directory
+        working-directory: of
+        run: |
+          name="$(basename '${{ inputs.addon_repo }}')"
+          mv addons/_addon_checkout "addons/$name"
+          echo "ADDON_NAME=$name" >> "$GITHUB_ENV"
+          git -C "addons/$name" log --oneline -1
+      - name: Download libs
+        working-directory: of
+        run: BITS=${{ matrix.wasm }} ./scripts/emscripten/download_libs.sh -t latest
+      - name: Build addon examples
+        working-directory: of
+        env:
+          EXAMPLES: ${{ inputs.examples }}
+        run: |
+          docker run --rm -v "$PWD:/src" -v "$GITHUB_WORKSPACE/harness:/harness:ro" -w /src \
+            -e WASM=${{ matrix.wasm }} -e GLES=${{ matrix.gles }} -e ADDON_DIR="addons/$ADDON_NAME" -e EXAMPLES="$EXAMPLES" \
+            emscripten/emsdk:6.0.13 bash /harness/scripts/inside/emscripten-addon.sh
