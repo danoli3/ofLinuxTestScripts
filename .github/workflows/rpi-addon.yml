@@ -162,4 +162,4 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/src" -v "$GITHUB_WORKSPACE/harness:/harness:ro" -w /src \
             -e WASM=${{ matrix.wasm }} -e GLES=${{ matrix.gles }} -e ADDON_DIR="addons/$ADDON_NAME" -e EXAMPLES="$EXAMPLES" \
-            emscripten/emsdk:6.0.13 bash /harness/scripts/inside/emscripten-addon.sh
+            emscripten/emsdk:7.0.0 bash /harness/scripts/inside/emscripten-addon.sh
