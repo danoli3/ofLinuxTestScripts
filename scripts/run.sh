@@ -41,8 +41,12 @@ command -v docker >/dev/null || { echo "ERROR: docker not found. On macOS: brew 
 docker info >/dev/null 2>&1 || { echo "ERROR: docker daemon not running. On macOS: colima start --arch aarch64"; exit 1; }
 [ -d "$OF_ROOT/.git" ] || { echo "ERROR: OF_ROOT is not a git checkout: $OF_ROOT"; exit 1; }
 
-echo "== OF checkout: $OF_ROOT (branch $OF_BRANCH) =="
-git -C "$OF_ROOT" checkout "$OF_BRANCH" >/dev/null 2>&1 || git -C "$OF_ROOT" checkout -b "$OF_BRANCH" "origin/$OF_BRANCH"
+echo "== OF checkout: $OF_ROOT (ref $OF_BRANCH) =="
+if ! git -C "$OF_ROOT" checkout "$OF_BRANCH" && \
+   ! git -C "$OF_ROOT" checkout -b "$OF_BRANCH" "origin/$OF_BRANCH"; then
+  echo "ERROR: could not check out OF ref $OF_BRANCH; stopping before tests" >&2
+  exit 1
+fi
 git -C "$OF_ROOT" log --oneline -1
 
 run_one() {

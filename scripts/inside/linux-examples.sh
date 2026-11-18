@@ -5,6 +5,7 @@ set -u
 CONFIG="${CONFIG:-Debug}"
 JOBS="${JOBS:-4}"
 LOGDIR="${LOGDIR:-$PWD/example-logs}"
+case "$(uname -m)" in x86_64) TPL=linux64 ;; aarch64) TPL=linuxaarch64 ;; *) TPL="linux$(uname -m)" ;; esac
 mkdir -p "$LOGDIR"
 
 echo "##[group]OF core ($CONFIG)"
@@ -17,7 +18,10 @@ for cat in ${CATEGORIES:-$(cd examples && ls -d */ | tr -d / )}; do
   for d in examples/"$cat"/*/; do
     d="${d%/}"; n="$cat/$(basename "$d")"
     case "$(basename "$d")" in *osx*) continue ;; esac
-    if [ ! -f "$d/Makefile" ]; then SKIPPED+=("$n"); continue; fi
+    if [ ! -d "$d/src" ]; then SKIPPED+=("$n"); continue; fi
+    # examples ship without a Makefile (the Project Generator adds it): use the platform template
+    [ -f "$d/Makefile" ] || cp "scripts/templates/$TPL/Makefile" "$d/Makefile"
+    [ -f "$d/config.make" ] || cp "scripts/templates/$TPL/config.make" "$d/config.make"
     echo "##[group]$n"
     if make -C "$d" -j"$JOBS" "$CONFIG" > "$LOGDIR/$(echo "$n" | tr / _).log" 2>&1; then
       PASS+=("$n"); echo "ok"
@@ -29,9 +33,9 @@ for cat in ${CATEGORIES:-$(cd examples && ls -d */ | tr -d / )}; do
 done
 
 {
-  echo "### OF examples ($(uname -m), $CONFIG): ${#PASS[@]} built, ${#FAILED[@]} failed, ${#SKIPPED[@]} skipped (no Makefile)"
+  echo "### OF examples ($(uname -m), $CONFIG): ${#PASS[@]} built, ${#FAILED[@]} failed, ${#SKIPPED[@]} skipped (no src)"
   if [ "${#FAILED[@]}" -gt 0 ]; then echo "| failed example |"; echo "|---|"; for n in "${FAILED[@]}"; do echo "| $n |"; done; fi
   if [ "${#SKIPPED[@]}" -gt 0 ]; then echo "<details><summary>skipped</summary>"; echo; for n in "${SKIPPED[@]}"; do echo "- $n"; done; echo "</details>"; fi
 } | tee -a "${GITHUB_STEP_SUMMARY:-/dev/null}"
 echo "PASS=${#PASS[@]} FAIL=${#FAILED[@]} SKIP=${#SKIPPED[@]}"
-[ "${#FAILED[@]}" -eq 0 ]
+[ "${#PASS[@]}" -gt 0 ] && [ "${#FAILED[@]}" -eq 0 ]
