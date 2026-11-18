@@ -8,7 +8,7 @@ on:
         default: openframeworks/openFrameworks
       of_branch:
         description: openFrameworks branch/tag/sha
-        default: master
+        default: 0.12.2-RC1
       config:
         description: Debug or Release
         type: choice
@@ -36,9 +36,13 @@ jobs:
           repository: ${{ inputs.of_repo }}
           ref: ${{ inputs.of_branch }}
           path: of
-      - name: OF setup
+      # The two steps `of setup linux` runs, without its Project Generator download (not needed to build examples).
+      - name: Install dependencies
         working-directory: of
-        run: DOWNLOAD_LIBS_ARGS="-g 10" bash ./of setup linux
+        run: sudo bash scripts/linux/ubuntu/install_dependencies.sh -y
+      - name: Download libs
+        working-directory: of
+        run: bash scripts/linux/download_libs.sh -t latest -g 10
       - name: Build examples
         working-directory: of
         env:
