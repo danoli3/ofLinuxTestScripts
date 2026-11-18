@@ -1,0 +1,52 @@
+name: openFrameworks examples (Linux)
+# Builds every examples/<category>/<example> of an OF checkout (the core examples, no addon under test).
+on:
+  workflow_dispatch:
+    inputs:
+      of_repo:
+        description: openFrameworks repository
+        default: openframeworks/openFrameworks
+      of_branch:
+        description: openFrameworks branch/tag/sha
+        default: master
+      config:
+        description: Debug or Release
+        type: choice
+        options: [Debug, Release]
+        default: Debug
+jobs:
+  examples:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux64, runner: ubuntu-24.04 }
+          - { name: linuxaarch64, runner: ubuntu-24.04-arm }
+    steps:
+      - name: Checkout harness
+        uses: actions/checkout@v7
+        with:
+          path: harness
+      - name: Checkout openFrameworks
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.of_repo }}
+          ref: ${{ inputs.of_branch }}
+          path: of
+      - name: OF setup
+        working-directory: of
+        run: DOWNLOAD_LIBS_ARGS="-g 10" bash ./of setup linux
+      - name: Build examples
+        working-directory: of
+        env:
+          CONFIG: ${{ inputs.config }}
+        run: bash "$GITHUB_WORKSPACE/harness/scripts/inside/linux-examples.sh"
+      - name: Upload failure logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: example-logs-${{ matrix.name }}
+          path: of/example-logs

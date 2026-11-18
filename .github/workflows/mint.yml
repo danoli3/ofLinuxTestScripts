@@ -4,7 +4,7 @@ on:
     inputs:
       of_branch:
         description: openFrameworks branch to test
-        default: master
+        default: 0.12.2-RC1
       level:
         description: smoke = lib-path tests only, full = download + core + unit tests
         type: choice

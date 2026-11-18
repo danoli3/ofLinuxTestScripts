@@ -1,12 +1,12 @@
 #!/bin/bash
 # Host orchestrator: run OF Linux tests in Docker for one target (or all).
 # Usage: ./scripts/run.sh <target|all>   (see README matrix)
-# Env: OF_ROOT (default ../openFrameworks), OF_BRANCH (default master),
+# Env: OF_ROOT (default ../openFrameworks), OF_BRANCH (default 0.12.2-RC1),
 #      SKIP_BUILD=1 for lib-path-only smoke.
 set -u
 HARNESS="$(cd "$(dirname "$0")/.." && pwd)"
 OF_ROOT="${OF_ROOT:-$HARNESS/../openFrameworks}"
-OF_BRANCH="${OF_BRANCH:-master}"
+OF_BRANCH="${OF_BRANCH:-0.12.2-RC1}"
 TARGET="${1:-rpi-arm64}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$HARNESS/results"

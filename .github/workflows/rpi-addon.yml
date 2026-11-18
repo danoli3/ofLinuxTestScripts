@@ -9,7 +9,7 @@ on:
         default: openframeworks/openFrameworks
       of_branch:
         description: openFrameworks branch/tag/sha
-        default: master
+        default: 0.12.2-RC1
       addon_repo:
         description: addon repository
         default: jvcleave/ofxImGui
