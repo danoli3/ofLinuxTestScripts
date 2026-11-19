@@ -1,0 +1,77 @@
+name: Run one OF example (Linux, headless)
+# Builds an OF core example and runs it under Xvfb (Mesa software GL) for a few seconds, then scans its output.
+on:
+  workflow_dispatch:
+    inputs:
+      of_repo:
+        description: openFrameworks repository
+        default: openframeworks/openFrameworks
+      of_branch:
+        description: openFrameworks branch/tag/sha
+        default: master
+      example:
+        description: example path under examples/
+        default: threads/threadedImageLoaderExample
+      seconds:
+        description: seconds to let it run
+        default: '30'
+      pattern:
+        description: regex of error lines to report
+        default: 'error|couldn.t load|SSL|CA cert'
+jobs:
+  run:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux64, runner: ubuntu-24.04, tpl: linux64 }
+          - { name: linuxaarch64, runner: ubuntu-24.04-arm, tpl: linuxaarch64 }
+    steps:
+      - name: Checkout openFrameworks
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.of_repo }}
+          ref: ${{ inputs.of_branch }}
+      - name: Install dependencies
+        run: sudo bash scripts/linux/ubuntu/install_dependencies.sh -y
+      - name: Download libs
+        run: bash scripts/linux/download_libs.sh -t latest -g 10
+      - name: Headless GL
+        run: sudo apt-get install -y xvfb libgl1-mesa-dri mesa-utils
+      - name: Build OF core
+        run: make -C libs/openFrameworksCompiled/project -j4 Debug
+      - name: Build example
+        run: |
+          d="examples/${{ inputs.example }}"
+          [ -f "$d/Makefile" ] || cp "scripts/templates/${{ matrix.tpl }}/Makefile" "$d/Makefile"
+          [ -f "$d/config.make" ] || cp "scripts/templates/${{ matrix.tpl }}/config.make" "$d/config.make"
+          make -C "$d" -j4 Debug
+      - name: Run example
+        run: |
+          d="examples/${{ inputs.example }}"
+          bin="$(ls "$d"/bin/*_debug 2>/dev/null | head -1)"
+          echo "binary: $bin"
+          cd "$d/bin"
+          set +e
+          xvfb-run -a -s "-screen 0 1280x1024x24" timeout -s TERM ${{ inputs.seconds }} "./$(basename "$bin")" > "$GITHUB_WORKSPACE/run.log" 2>&1
+          echo "exit code: $? (124 = stopped by timeout, expected)"
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          echo "log lines: $(wc -l < run.log)"
+          echo "---- lines matching: ${{ inputs.pattern }}"
+          grep -n -i -E '${{ inputs.pattern }}' run.log | head -60 || true
+          echo "---- last 15 lines"
+          tail -15 run.log
+          {
+            echo "### ${{ inputs.example }} on ${{ matrix.name }}"
+            echo "matching error lines: $(grep -c -i -E '${{ inputs.pattern }}' run.log || true)"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-log-${{ matrix.name }}
+          path: run.log
